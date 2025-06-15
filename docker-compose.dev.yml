@@ -1,0 +1,53 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+    env_file: .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      retries: 5
+
+  migrations:
+    image: liquibase/liquibase:latest
+    command: >
+      --url=${DATABASE_URL} --changeLogFile=/liquibase/changelog/master.xml update
+    volumes:
+      - ./migrations:/liquibase/changelog
+    depends_on:
+      - db
+
+  auth:
+    build: ./auth-service
+    env_file: .env
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+
+  backend:
+    build: ./backend
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/code
+    command: uvicorn main:app --host 0.0.0.0 --reload
+    depends_on:
+      - auth
+      - db
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_API_URL: "http://localhost:8000"
+    ports:
+      - "5173:5173"
+    command: npm run dev
+    volumes:
+      - ./frontend:/app
+
+volumes:
+  pgdata: 
