@@ -12,8 +12,14 @@ services:
 
   migrations:
     image: liquibase/liquibase:latest
-    command: >
-      --url=${DATABASE_URL} --changeLogFile=/liquibase/changelog/master.xml update
+    env_file: .env
+    working_dir: /liquibase/changelog
+    command:
+      - update
+      - --url=jdbc:postgresql://db:5432/${POSTGRES_DB}
+      - --username=${POSTGRES_USER}
+      - --password=${POSTGRES_PASSWORD}
+      - --changeLogFile=master.xml
     volumes:
       - ./migrations:/liquibase/changelog
     depends_on:
@@ -26,6 +32,7 @@ services:
       - "3001:3001"
     depends_on:
       - db
+      - migrations
 
   backend:
     build: ./backend
@@ -48,6 +55,8 @@ services:
     command: npm run dev
     volumes:
       - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
 
 volumes:
-  pgdata: 
+  pgdata:
+  frontend_node_modules: 

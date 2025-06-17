@@ -1,0 +1,17 @@
+# Ignore environment files
+.env
+
+# Ignore Python cache
+__pycache__/
+
+# Ignore Node modules
+node_modules/
+
+# Ignore build outputs
+dist/
+
+# Ignore local environment files
+*.local
+
+# Ignore JetBrains IDE project files
+.idea/ 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+  <changeSet id="001-create-counter" author="init">
+    <createTable tableName="global_counter">
+      <column name="id" type="INT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="value" type="INT" defaultValueNumeric="0">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+
+    <insert tableName="global_counter">
+      <column name="value" valueNumeric="0" />
+    </insert>
+  </changeSet>
+
+</databaseChangeLog> 
