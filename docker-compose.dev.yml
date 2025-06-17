@@ -47,7 +47,9 @@ services:
       - db
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: docker/Dockerfile
     environment:
       VITE_API_URL: "http://localhost:8000"
     ports:

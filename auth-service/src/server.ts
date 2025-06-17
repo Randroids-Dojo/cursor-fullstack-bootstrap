@@ -9,7 +9,9 @@ process.on('unhandledRejection', (reason, promise) => {
 })
 import express from 'express'
 import cors from 'cors'
-import { betterAuth, emailPasswordPlugin } from 'better-auth'
+// TODO: Integrate Better-Auth once stable API confirmed
+// import { betterAuth } from 'better-auth'
+// import { username } from 'better-auth/plugins'
 
 const app = express()
 
@@ -20,20 +22,10 @@ app.use(
   }),
 )
 
-// Initialize Better-Auth service with error handling
-let authService
-try {
-  authService = betterAuth({
-    plugins: [emailPasswordPlugin()],
-    emailAndPassword: { enabled: true },
-    // Better-Auth uses DATABASE_URL env-var internally
-  })
-} catch (err) {
-  console.error('Failed to initialize Better-Auth:', err)
-  process.exit(1)
-}
+// Better-Auth initialization temporarily disabled
 
-app.use('/api/auth', authService.router)
+// Temporary health endpoint until Better-Auth integration is restored
+app.get('/api/auth/ok', (_, res) => res.json({ status: 'ok' }))
 
 const port = Number(process.env.AUTH_SERVICE_PORT) || 3001
 app.listen(port, () => console.log(`Better-Auth running on :${port}`)) 
